@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using TechChallenge.Api.Configuration;
 
 namespace TechChallenge.Api;
 
@@ -8,6 +9,8 @@ namespace TechChallenge.Api;
 /// actual Lambda function entry point. The Lambda handler field should be set to
 /// 
 /// TechChallenge.Api::TechChallenge.Api.LambdaEntryPoint::FunctionHandlerAsync
+/// 
+/// https://aws.amazon.com/pt/blogs/modernizing-with-aws/how-to-load-net-configuration-from-aws-secrets-manager/
 /// </summary>
 public class LambdaEntryPoint :
 
@@ -31,8 +34,12 @@ public class LambdaEntryPoint :
     /// <param name="builder"></param>
     protected override void Init(IWebHostBuilder builder)
     {
-        builder
-            .UseStartup<Startup>();
+        builder.ConfigureAppConfiguration((_, configurationBuilder) =>
+        {
+            configurationBuilder.AddAmazonSecretsManager("us-east-1", "dev-techchallenge-terraform-terraform");
+        });
+
+        builder.UseStartup<Startup>();
     }
 
     /// <summary>
@@ -42,7 +49,5 @@ public class LambdaEntryPoint :
     /// Instead customize the IWebHostBuilder in the Init(IWebHostBuilder) overload.
     /// </summary>
     /// <param name="builder"></param>
-    protected override void Init(IHostBuilder builder)
-    {
-    }
+    protected override void Init(IHostBuilder builder) { }
 }
