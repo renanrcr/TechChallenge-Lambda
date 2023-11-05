@@ -2,7 +2,7 @@
 
 namespace TechChallenge.Api.Domain.Adapters
 {
-    public interface IIdentificacaoPedidoRepository : IRepository<IdentificacaoPedido>
+    public interface IAutenticaClienteRepository : IRepository<AutenticaCliente>
     {
     }
 }

@@ -10,8 +10,7 @@ namespace TechChallenge.Api.Infra
         public static void AddInfraModule(this IServiceCollection services)
         {
             services.AddScoped<DataBaseContext>();
-            services.AddScoped<IClienteRepository, ClienteRepository>();
-            services.AddScoped<IIdentificacaoPedidoRepository, IdentificacaoPedidoRepository>();
+            services.AddScoped<IAutenticaClienteRepository, AutenticaClienteRepository>();
         }
     }
 }

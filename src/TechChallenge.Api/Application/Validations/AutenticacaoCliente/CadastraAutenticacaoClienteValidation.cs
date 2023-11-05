@@ -1,16 +1,15 @@
 ﻿using FluentValidation;
 using TechChallenge.Api.Domain.Adapters;
 using TechChallenge.Api.Domain.Entities;
-using TechChallenge.Api.Domain.Enums;
 using TechChallenge.Api.Domain.ValueObjects;
 
-namespace TechChallenge.Api.Application.Validations.IdentificacoesPedido
+namespace TechChallenge.Api.Application.Validations.AutenticacaoCliente
 {
-    public class CadastraIdentificacaoPedidoValidation : ValidationBase<IdentificacaoPedido>
+    public class CadastraAutenticacaoClienteValidation : ValidationBase<AutenticaCliente>
     {
-        private IIdentificacaoPedidoRepository _identificacaoPedidoRepository;
+        private IAutenticaClienteRepository _identificacaoPedidoRepository;
 
-        public CadastraIdentificacaoPedidoValidation(IIdentificacaoPedidoRepository identificacaoPedidoRepository)
+        public CadastraAutenticacaoClienteValidation(IAutenticaClienteRepository identificacaoPedidoRepository)
         {
             _identificacaoPedidoRepository = identificacaoPedidoRepository;
 
@@ -23,31 +22,31 @@ namespace TechChallenge.Api.Application.Validations.IdentificacoesPedido
 
         public void ValidarValorCliente()
         {
-            RuleFor(x => x.TipoIdentificacaoPedido).Must((x, identificacaoPedido) =>
+            RuleFor(x => x.CPF).Must((x, CPF) =>
             {
-                return !(identificacaoPedido == ETipoIdentificacaoPedido.CLIENTE && !string.IsNullOrEmpty(x.Valor));
+                return !string.IsNullOrEmpty(x.CPF);
             }).WithMessage("Informe um valor válido.");
         }
 
         public void ValidarValorCPF()
         {
-            RuleFor(x => x.TipoIdentificacaoPedido).Must((x, identificacaoPedido) =>
+            RuleFor(x => x.CPF).Must((x, CPF) =>
             {
-                return !(identificacaoPedido == ETipoIdentificacaoPedido.CPF && ValidarCPF(x.Valor));
-            }).WithMessage("Informe um CPF válido."); ;
+                return ValidarCPF(x.CPF);
+            }).WithMessage("Informe um CPF válido.");
         }
 
         private bool ValidarCPF(string? valor) => new CPF(valor).IsValidado;
 
         private void ValidarExisteIdentificacaoCadastrada()
         {
-            RuleFor(s => s.Valor)
+            RuleFor(s => s.CPF)
                 .MustAsync(ExisteIdentificacaoAsync).WithMessage("Identificação já cadastrada em nossa base de dados.");
         }
 
         private async Task<bool> ExisteIdentificacaoAsync(string? valor, CancellationToken token)
         {
-            return !await _identificacaoPedidoRepository.Existe(x => !string.IsNullOrEmpty(valor) && x.Valor == valor);
+            return !await _identificacaoPedidoRepository.Existe(x => !string.IsNullOrEmpty(valor) && x.CPF == valor);
         }
     }
 }

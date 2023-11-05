@@ -4,9 +4,9 @@ using TechChallenge.Api.Infra.Context;
 
 namespace TechChallenge.Api.Infra.Repositories
 {
-    public class ClienteRepository : Repository<Cliente>, IClienteRepository
+    public class AutenticaClienteRepository : Repository<AutenticaCliente>, IAutenticaClienteRepository
     {
-        public ClienteRepository(DataBaseContext dataBaseContext)
+        public AutenticaClienteRepository(DataBaseContext dataBaseContext)
             : base(dataBaseContext)
         {
         }

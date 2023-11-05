@@ -11,8 +11,7 @@ namespace TechChallenge.Api.Infra.Context
             ChangeTracker.AutoDetectChangesEnabled = false;
         }
 
-        public DbSet<Cliente> Clientes { get; set; }
-        public DbSet<IdentificacaoPedido> IdentificacaoPedidos { get; set; }
+        public DbSet<AutenticaCliente> AutenticaClientes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

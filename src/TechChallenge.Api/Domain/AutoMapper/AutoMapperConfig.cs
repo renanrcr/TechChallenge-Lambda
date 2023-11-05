@@ -8,8 +8,7 @@ namespace TechChallenge.Api.Domain.AutoMapper
     {
         public AutoMapperConfig()
         {
-            CreateMap<ClienteDTO, Cliente>().ReverseMap();
-            CreateMap<IdentificacaoDTO, IdentificacaoPedido>().ReverseMap();
+            CreateMap<AutenticacaoClienteDTO, AutenticaCliente>().ReverseMap();
         }
     }
 }
