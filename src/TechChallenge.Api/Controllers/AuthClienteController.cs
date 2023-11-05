@@ -6,7 +6,7 @@ using TechChallenge.Api.Domain.Commands.AutenticacaoCliente;
 
 namespace TechChallenge.Api.Controllers
 {
-    internal class AuthClienteController : BaseController
+    public class AuthClienteController : BaseController
     {
         private readonly IMediator _mediator;
 

@@ -11,6 +11,7 @@ namespace TechChallenge.Api.Infra
         {
             services.AddScoped<DataBaseContext>();
             services.AddScoped<IAutenticaClienteRepository, AutenticaClienteRepository>();
+            services.AddScoped<ILoginClienteRepository, LoginClienteRepository>();
         }
     }
 }

@@ -8,6 +8,8 @@ using TechChallenge.Api.Application;
 using Microsoft.OpenApi.Models;
 using TechChallenge.Api.Infra;
 using Microsoft.Extensions.Hosting;
+using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2;
 
 namespace TechChallenge.Api;
 
@@ -29,6 +31,10 @@ public class Startup
         var connectionString = Configuration.GetSection("DatabaseSettings:ConnectionString").Value;
         services.AddDbContext<DataBaseContext>(options =>
             options.UseSqlServer(connectionString));
+
+        services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+        services.AddAWSService<IAmazonDynamoDB>();
+        services.AddScoped<IDynamoDBContext, DynamoDBContext>();
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(AppDomain)));
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
