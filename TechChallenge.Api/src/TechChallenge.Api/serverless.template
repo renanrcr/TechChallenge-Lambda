@@ -1,64 +1,35 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Transform": "AWS::Serverless-2016-10-31",
-  "Description": "An AWS Serverless Application. This template is partially managed by Amazon.Lambda.Annotations (v1.0.0.0).",
+  "Description": "An AWS Serverless Application that uses the ASP.NET Core framework running in Amazon Lambda. This template is partially managed by Amazon.Lambda.Annotations (v1.0.0.0).",
+  "Parameters": {},
+  "Conditions": {},
   "Resources": {
-    "TechChallenge.ApiFunctionsGetGenerated": {
+    "AspNetCoreFunction": {
       "Type": "AWS::Serverless::Function",
-      "Metadata": {
-        "Tool": "Amazon.Lambda.Annotations",
-        "SyncedEvents": [
-          "RootGet"
-        ]
-      },
       "Properties": {
-        "Architectures": [
-          "x86_64"
-        ],
-        "Handler": "TechChallenge.Api::TechChallenge.Api.Functions::Get",
+        "Handler": "TechChallenge.API::TechChallenge.API.LambdaEntryPoint::FunctionHandlerAsync",
         "Runtime": "dotnet6",
-        "CodeUri": ".",
+        "CodeUri": "",
         "MemorySize": 256,
         "Timeout": 30,
+        "Role": null,
         "Policies": [
-          "AWSLambdaBasicExecutionRole"
+          "AWSLambda_FullAccess"
         ],
-        "PackageType": "Zip",
         "Events": {
-          "RootGet": {
+          "ProxyResource": {
             "Type": "Api",
             "Properties": {
-              "Path": "/",
-              "Method": "GET"
+              "Path": "/{proxy+}",
+              "Method": "ANY"
             }
-          }
-        }
-      }
-    },
-    "TechChallengeApiFunctionsGetGenerated": {
-      "Type": "AWS::Serverless::Function",
-      "Metadata": {
-        "Tool": "Amazon.Lambda.Annotations",
-        "SyncedEvents": [
-          "RootGet"
-        ]
-      },
-      "Properties": {
-        "Runtime": "dotnet6",
-        "CodeUri": ".",
-        "MemorySize": 256,
-        "Timeout": 30,
-        "Policies": [
-          "AWSLambdaBasicExecutionRole"
-        ],
-        "PackageType": "Zip",
-        "Handler": "TechChallenge.Api::TechChallenge.Api.Functions_Get_Generated::Get",
-        "Events": {
-          "RootGet": {
+          },
+          "RootResource": {
             "Type": "Api",
             "Properties": {
               "Path": "/",
-              "Method": "GET"
+              "Method": "ANY"
             }
           }
         }

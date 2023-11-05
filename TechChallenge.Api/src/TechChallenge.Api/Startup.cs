@@ -1,36 +1,68 @@
-using Amazon.Lambda.Annotations;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TechChallenge.Api.Infra.Context;
+using TechChallenge.Api.Application;
+using Microsoft.OpenApi.Models;
+using TechChallenge.Api.Infra;
+using Microsoft.Extensions.Hosting;
 
-namespace TechChallenge.Api
+namespace TechChallenge.Api;
+
+public class Startup
 {
-    [LambdaStartup]
-    public class Startup
+    public Startup(IConfiguration configuration)
     {
-        /// <summary>
-        /// Services for Lambda functions can be registered in the services dependency injection container in this method. 
-        ///
-        /// The services can be injected into the Lambda function through the containing type's constructor or as a
-        /// parameter in the Lambda function using the FromService attribute. Services injected for the constructor have
-        /// the lifetime of the Lambda compute container. Services injected as parameters are created within the scope
-        /// of the function invocation.
-        /// </summary>
-        public void ConfigureServices(IServiceCollection services)
+        Configuration = configuration;
+    }
+
+    public IConfiguration Configuration { get; }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddControllers();
+        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        services.AddEndpointsApiExplorer();
+
+        var connectionString = Configuration.GetSection("DatabaseSettings:ConnectionString").Value;
+        services.AddDbContext<DataBaseContext>(options =>
+            options.UseSqlServer(connectionString));
+
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(AppDomain)));
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        services.AddInfraModule();
+        services.AddApplicationModule();
+
+        services.AddControllers();
+        services.AddSwaggerGen(c =>
         {
-            //// Example of creating the IConfiguration object and
-            //// adding it to the dependency injection container.
-            //var builder = new ConfigurationBuilder()
-            //                    .AddJsonFile("appsettings.json", true);
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "TechChallenge - Fase 02", Version = "v1" });
+        });
+    }
 
-            //// Add AWS Systems Manager as a potential provider for the configuration. This is 
-            //// available with the Amazon.Extensions.Configuration.SystemsManager NuGet package.
-            //builder.AddSystemsManager("/app/settings");
-
-            //var configuration = builder.Build();
-            //services.AddSingleton<IConfiguration>(configuration);
-
-            //// Example of using the AWSSDK.Extensions.NETCore.Setup NuGet package to add
-            //// the Amazon S3 service client to the dependency injection container.
-            //services.AddAWSService<Amazon.S3.IAmazonS3>();
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TechChallenge v1"));
         }
+
+        DatabaseManagementService.MigrationInitialisation(app);
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+            endpoints.MapGet("/", context => {
+                context.Response.Redirect("/swagger");
+                return Task.CompletedTask;
+            });
+        });
     }
 }
