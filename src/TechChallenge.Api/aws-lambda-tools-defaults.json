@@ -5,15 +5,9 @@
     "dotnet lambda help",
     "All the command line options for the Lambda command can be specified in this file."
   ],
-  "profile": "techchallenge",
+  "profile": "default",
   "region": "us-east-1",
   "configuration": "Release",
-  "s3-prefix": "TechChallenge.Api/",
-  "template": "serverless.template",
-  "template-parameters": "",
-  "function-architecture": "x86_64",
-  "function-runtime": "dotnet6",
-  "function-memory-size": 256,
-  "function-timeout": 30,
-  "function-handler": "BookingApi.Create::BookingApi.Create.Function::CreateBookingAsync"
+  "s3-prefix": "TechChallenge.API/",
+  "template": "serverless.template"
 }
